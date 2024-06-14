@@ -7,8 +7,8 @@
 
 struct node
 {
-	char song_name[30];
-	char song_path[40];
+	char song_name[50];
+	char song_path[200];
 	struct node *next;
 
 } *head = NULL;
@@ -46,7 +46,7 @@ void add_songs()
 	start->next = NULL;
 
 	printf("\n\n\tEnter the name of song: ");
-	scanf("%s", start->song_name);
+	scanf(" %[^\n]", start->song_name);
 	printf("\tEnter the path of the song: ");
 	scanf("%s", start->song_path);
 
@@ -68,9 +68,43 @@ void add_songs()
 	display_songs();
 }
 
+void insertion_sort()
+{
+	if (head == NULL || head->next == NULL)
+	{
+		return;
+	}
+
+	struct node *sorted = NULL;
+
+	struct node *current = head;
+	while (current != NULL)
+	{
+		struct node *next = current->next;
+		if (sorted == NULL || strcmp(sorted->song_name, current->song_name) >= 0)
+		{
+			current->next = sorted;
+			sorted = current;
+		}
+		else
+		{
+			struct node *temp = sorted;
+			while (temp->next != NULL && strcmp(temp->next->song_name, current->song_name) < 0)
+			{
+				temp = temp->next;
+			}
+			current->next = temp->next;
+			temp->next = current;
+		}
+		current = next;
+	}
+	head = sorted;
+}
+
 void display_songs()
 {
 	system("cls");
+	insertion_sort();
 
 	struct node *ptr = head;
 
@@ -240,7 +274,7 @@ void search_song()
 
 	printf("\n\n\tEnter song name to be searched: ");
 	char song[40];
-	scanf("%s", song);
+	scanf(" %[^\n]", song);
 
 	int position = DFS(head, song, 0);
 
@@ -283,7 +317,7 @@ void delete_song()
 
 	char song_delete[40];
 	printf("\n\n\tEnter the name of the song to delete:");
-	scanf("%s", song_delete);
+	scanf(" %[^\n]", song_delete);
 
 	struct node *ptr = head;
 	struct node *ptr1 = NULL;
@@ -325,7 +359,7 @@ int main()
 	int choice, pos;
 
 	printf("\n\n\t\t\t<---------------- Welcome to Groovecho music player ---------------->\n");
-	// PlaySound(".\\Audio\\welcome.WAV", NULL, SND_SYNC);
+	PlaySound(".\\Audio\\welcome.WAV", NULL, SND_SYNC);
 
 	printf("\n\tOptions-\n\n");
 	printf("\t1. Add songs to playlist\n");
@@ -334,7 +368,7 @@ int main()
 	printf("\t4. Select song from playlist\n");
 	printf("\t5. Search song from playlist\n");
 	printf("\t6. Delete song from playlist\n");
-	// PlaySound(".\\Audio\\info.WAV", NULL, SND_SYNC);
+	PlaySound(".\\Audio\\info.WAV", NULL, SND_SYNC);
 
 	while (1)
 	{
